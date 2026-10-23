@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOG's links</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f5f6f8;
+    --surface: #ffffff;
+    --surface-hover: #f0f2f5;
+    --text: #20242b;
+    --muted: #68707d;
+    --border: #e0e4e9;
+    --accent: #345f9e;
+    --shadow: 0 2px 7px rgba(20, 30, 45, .05);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --page: #17191d;
+    --surface: #22252b;
+    --surface-hover: #2b2f36;
+    --text: #eceff3;
+    --muted: #a3aab5;
+    --border: #363b44;
+    --accent: #a9c7ff;
+    --shadow: 0 2px 7px rgba(0, 0, 0, .12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    transition: background .18s, color .18s;
+  }
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand { font-size: 1.18rem; font-weight: 750; letter-spacing: -.03em; }
+  .brand small { display: block; font-size: .8rem; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  button, input { font: inherit; }
+  .button {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text);
+    padding: 9px 12px;
+    cursor: pointer;
+  }
+  .button:hover { background: var(--surface-hover); }
+  main { max-width: 1100px; margin: auto; padding: 26px 22px 44px; }
+  .search-row { display: flex; gap: 10px; margin-bottom: 28px; }
+  .search {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+  }
+  .search:focus { border-color: var(--accent); }
+  section { margin: 0 0 30px; }
+  .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  h2 { margin: 0; font-size: 1rem; font-weight: 700; }
+  .count { color: var(--muted); font-size: .82rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 13px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: background .15s, border-color .15s;
+  }
+  .card:hover { background: var(--surface-hover); border-color: #9aa6b8; }
+  .icon {
+    width: 38px; height: 38px; flex: 0 0 38px;
+    display: grid; place-items: center;
+    border-radius: 9px; background: var(--surface-hover); font-size: 1.05rem;
+  }
+  .details { min-width: 0; flex: 1; }
+  .name { display: block; font-weight: 650; }
+  .url { display: block; color: var(--muted); font-size: .78rem; overflow-wrap: anywhere; }
+  .fav {
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+    font-size: 1.25rem; line-height: 1; padding: 6px; border-radius: 7px;
+  }
+  .fav:hover { background: var(--surface-hover); }
+  .fav.active { color: #d89a18; }
+  .empty { display: none; padding: 28px 0; text-align: center; color: var(--muted); }
+  footer { padding: 0 22px 28px; text-align: center; color: var(--muted); font-size: .8rem; }
+  @media (max-width: 560px) {
+    .topbar-inner { padding: 15px; align-items: flex-start; }
+    main { padding: 20px 15px 34px; }
+    .grid { grid-template-columns: 1fr; }
+    .brand small { max-width: 190px; }
+    .button { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body data-theme="light">
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">TOG's links<small>Your saved websites in one place</small></div>
+    <div class="actions">
+      <button class="button" id="themeToggle" type="button" aria-label="Switch to dark mode">🌙 Dark mode</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="search-row">
+    <input class="search" id="search" type="search" placeholder="Search websites..." aria-label="Search websites">
+  </div>
+
+  <section id="favoritesSection">
+    <div class="section-heading"><h2>★ Favorites</h2><span class="count" id="favoriteCount">0 saved</span></div>
+    <div class="grid" id="favoritesGrid"></div>
+    <p id="noFavorites" class="count">Click the ☆ on any website to add it here.</p>
+  </section>
+
+  <div id="sections">
+    <section>
+      <div class="section-heading"><h2>Favorites & shortcuts</h2></div>
+      <div class="grid">
+        <a class="card" href="https://www.google.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🔎</span><span class="details"><span class="name">Google</span><span class="url">google.com</span></span></a>
+        <a class="card" href="https://www.duckduckgo.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🦆</span><span class="details"><span class="name">DuckDuckGo</span><span class="url">duckduckgo.com</span></span></a>
+        <a class="card" href="https://sites.google.com/view/snoopyshub/h0me" target="_blank" rel="noopener noreferrer"><span class="icon">🐶</span><span class="details"><span class="name">Snoopy's Hub</span><span class="url">sites.google.com/view/snoopyshub/h0me</span></span></a>
+        <a class="card" href="https://thatoneguy-67.github.io/web/" target="_blank" rel="noopener noreferrer"><span class="icon">🌐</span><span class="details"><span class="name">My Web Page</span><span class="url">thatoneguy-67.github.io/web</span></span></a>
+      </div>
+    </section>
+    <section>
+      <div class="section-heading"><h2>Social & video</h2></div>
+      <div class="grid">
+        <a class="card" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🎵</span><span class="details"><span class="name">TikTok</span><span class="url">tiktok.com</span></span></a>
+        <a class="card" href="https://www.snapchat.com/" target="_blank" rel="noopener noreferrer"><span class="icon">👻</span><span class="details"><span class="name">Snapchat</span><span class="url">snapchat.com</span></span></a>
+        <a class="card" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><span class="icon">▶️</span><span class="details"><span class="name">YouTube</span><span class="url">youtube.com</span></span></a>
+        <a class="card" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><span class="icon">📸</span><span class="details"><span class="name">Instagram</span><span class="url">instagram.com</span></span></a>
+        <a class="card" href="https://www.reddit.com/" target="_blank" rel="noopener noreferrer"><span class="icon">💬</span><span class="details"><span class="name">Reddit</span><span class="url">reddit.com</span></span></a>
+        <a class="card" href="https://discord.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🎮</span><span class="details"><span class="name">Discord</span><span class="url">discord.com</span></span></a>
+        <a class="card" href="https://www.twitch.tv/" target="_blank" rel="noopener noreferrer"><span class="icon">🟣</span><span class="details"><span class="name">Twitch</span><span class="url">twitch.tv</span></span></a>
+        <a class="card" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer"><span class="icon">📌</span><span class="details"><span class="name">Pinterest</span><span class="url">pinterest.com</span></span></a>
+        <a class="card" href="https://x.com/" target="_blank" rel="noopener noreferrer"><span class="icon">𝕏</span><span class="details"><span class="name">X</span><span class="url">x.com</span></span></a>
+        <a class="card" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><span class="icon">👥</span><span class="details"><span class="name">Facebook</span><span class="url">facebook.com</span></span></a>
+      </div>
+    </section>
+    <section>
+      <div class="section-heading"><h2>Gaming</h2></div>
+      <div class="grid">
+        <a class="card" href="https://www.xbox.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🎮</span><span class="details"><span class="name">Xbox</span><span class="url">xbox.com</span></span></a>
+        <a class="card" href="https://www.roblox.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🧱</span><span class="details"><span class="name">Roblox</span><span class="url">roblox.com</span></span></a>
+        <a class="card" href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🕹️</span><span class="details"><span class="name">Steam</span><span class="url">store.steampowered.com</span></span></a>
+        <a class="card" href="https://www.epicgames.com/" target="_blank" rel="noopener noreferrer"><span class="icon">⚡</span><span class="details"><span class="name">Epic Games</span><span class="url">epicgames.com</span></span></a>
+        <a class="card" href="https://www.minecraft.net/" target="_blank" rel="noopener noreferrer"><span class="icon">⛏️</span><span class="details"><span class="name">Minecraft</span><span class="url">minecraft.net</span></span></a>
+        <a class="card" href="https://www.chess.com/" target="_blank" rel="noopener noreferrer"><span class="icon">♟️</span><span class="details"><span class="name">Chess.com</span><span class="url">chess.com</span></span></a>
+        <a class="card" href="https://itch.io/" target="_blank" rel="noopener noreferrer"><span class="icon">👾</span><span class="details"><span class="name">itch.io</span><span class="url">itch.io</span></span></a>
+        <a class="card" href="https://www.coolmathgames.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🧠</span><span class="details"><span class="name">Coolmath Games</span><span class="url">coolmathgames.com</span></span></a>
+      </div>
+    </section>
+    <section>
+      <div class="section-heading"><h2>School & productivity</h2></div>
+      <div class="grid">
+        <a class="card" href="https://classroom.google.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🏫</span><span class="details"><span class="name">Google Classroom</span><span class="url">classroom.google.com</span></span></a>
+        <a class="card" href="https://drive.google.com/" target="_blank" rel="noopener noreferrer"><span class="icon">📁</span><span class="details"><span class="name">Google Drive</span><span class="url">drive.google.com</span></span></a>
+        <a class="card" href="https://docs.google.com/" target="_blank" rel="noopener noreferrer"><span class="icon">📄</span><span class="details"><span class="name">Google Docs</span><span class="url">docs.google.com</span></span></a>
+        <a class="card" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer"><span class="icon">✉️</span><span class="details"><span class="name">Gmail</span><span class="url">mail.google.com</span></span></a>
+        <a class="card" href="https://www.khanacademy.org/" target="_blank" rel="noopener noreferrer"><span class="icon">📖</span><span class="details"><span class="name">Khan Academy</span><span class="url">khanacademy.org</span></span></a>
+        <a class="card" href="https://quizlet.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🗂️</span><span class="details"><span class="name">Quizlet</span><span class="url">quizlet.com</span></span></a>
+        <a class="card" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🎨</span><span class="details"><span class="name">Canva</span><span class="url">canva.com</span></span></a>
+        <a class="card" href="https://www.wikipedia.org/" target="_blank" rel="noopener noreferrer"><span class="icon">🌍</span><span class="details"><span class="name">Wikipedia</span><span class="url">wikipedia.org</span></span></a>
+        <a class="card" href="https://halifaxk12.instructure.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🏫</span><span class="details"><span class="name">Halifax Canvas</span><span class="url">halifaxk12.instructure.com</span></span></a>
+      </div>
+    </section>
+    <section>
+      <div class="section-heading"><h2>Tools & more</h2></div>
+      <div class="grid">
+        <a class="card" href="https://github.com/" target="_blank" rel="noopener noreferrer"><span class="icon">💻</span><span class="details"><span class="name">GitHub</span><span class="url">github.com</span></span></a>
+        <a class="card" href="https://codepen.io/" target="_blank" rel="noopener noreferrer"><span class="icon">🧪</span><span class="details"><span class="name">CodePen</span><span class="url">codepen.io</span></span></a>
+        <a class="card" href="https://www.speedtest.net/" target="_blank" rel="noopener noreferrer"><span class="icon">📶</span><span class="details"><span class="name">Speedtest</span><span class="url">speedtest.net</span></span></a>
+        <a class="card" href="https://www.weather.gov/" target="_blank" rel="noopener noreferrer"><span class="icon">🌦️</span><span class="details"><span class="name">Weather.gov</span><span class="url">weather.gov</span></span></a>
+        <a class="card" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🎧</span><span class="details"><span class="name">Spotify</span><span class="url">open.spotify.com</span></span></a>
+        <a class="card" href="https://www.imdb.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🍿</span><span class="details"><span class="name">IMDb</span><span class="url">imdb.com</span></span></a>
+        <a class="card" href="https://www.amazon.com/" target="_blank" rel="noopener noreferrer"><span class="icon">📦</span><span class="details"><span class="name">Amazon</span><span class="url">amazon.com</span></span></a>
+        <a class="card" href="https://www.ebay.com/" target="_blank" rel="noopener noreferrer"><span class="icon">🛍️</span><span class="details"><span class="name">eBay</span><span class="url">ebay.com</span></span></a>
+      </div>
+    </section>
+  </div>
+  <p class="empty" id="empty">No websites match your search.</p>
+</main>
+<footer>Your favorites and theme are saved in this browser.</footer>
+
+<script>
+(() => {
+  const root = document.body;
+  const themeButton = document.getElementById('themeToggle');
+  const search = document.getElementById('search');
+  const favoriteGrid = document.getElementById('favoritesGrid');
+  const favoriteCount = document.getElementById('favoriteCount');
+  const noFavorites = document.getElementById('noFavorites');
+  const empty = document.getElementById('empty');
+  const allCards = [...document.querySelectorAll('#sections .card')];
+  const sections = [...document.querySelectorAll('#sections section')];
+  const storage = {
+    get(key, fallback) { try { const value = localStorage.getItem(key); return value === null ? fallback : value; } catch { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch {} }
+  };
+  let favorites = [];
+  try { favorites = JSON.parse(storage.get('linkHubFavorites', '[]')); if (!Array.isArray(favorites)) favorites = []; } catch { favorites = []; }
+
+  function applyTheme(theme) {
+    root.dataset.theme = theme;
+    themeButton.textContent = theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
+    themeButton.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    storage.set('linkHubTheme', theme);
+  }
+  applyTheme(storage.get('linkHubTheme', 'light') === 'dark' ? 'dark' : 'light');
+  themeButton.addEventListener('click', () => applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+  function getCardInfo(card) {
+    return {
+      href: card.href,
+      name: card.querySelector('.name')?.textContent.trim() || card.href,
+      url: card.querySelector('.url')?.textContent.trim() || new URL(card.href).hostname,
+      icon: card.querySelector('.icon')?.textContent.trim() || '↗'
+    };
+  }
+  function makeFavoriteCard(info) {
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = info.href;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+    const icon = document.createElement('span');
+    icon.className = 'icon';
+    icon.textContent = info.icon;
+    const details = document.createElement('span');
+    details.className = 'details';
+    const name = document.createElement('span');
+    name.className = 'name';
+    name.textContent = info.name;
+    const url = document.createElement('span');
+    url.className = 'url';
+    url.textContent = info.url;
+    details.append(name, url);
+    const star = document.createElement('button');
+    star.type = 'button';
+    star.className = 'fav active';
+    star.textContent = '★';
+    star.title = 'Remove from favorites';
+    star.setAttribute('aria-label', 'Remove ' + info.name + ' from favorites');
+    star.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      favorites = favorites.filter(href => href !== info.href);
+      saveFavorites();
+      renderFavorites();
+      updateStars();
+      filterCards();
+    });
+    card.append(icon, details, star);
+    return card;
+  }
+  function saveFavorites() { storage.set('linkHubFavorites', JSON.stringify(favorites)); }
+  function renderFavorites() {
+    favoriteGrid.replaceChildren();
+    const infoByUrl = new Map(allCards.map(card => [card.href, getCardInfo(card)]));
+    favorites = favorites.filter(href => infoByUrl.has(href));
+    favorites.forEach(href => favoriteGrid.appendChild(makeFavoriteCard(infoByUrl.get(href))));
+    favoriteCount.textContent = favorites.length + (favorites.length === 1 ? ' saved' : ' saved');
+    noFavorites.style.display = favorites.length ? 'none' : 'block';
+    favoriteGrid.style.display = favorites.length ? 'grid' : 'none';
+  }
+  function updateStars() {
+    allCards.forEach(card => {
+      let star = card.querySelector('.fav');
+      if (!star) {
+        star = document.createElement('button');
+        star.type = 'button';
+        star.className = 'fav';
+        star.addEventListener('click', event => {
+          event.preventDefault();
+          event.stopPropagation();
+          const href = card.href;
+          if (favorites.includes(href)) favorites = favorites.filter(item => item !== href);
+          else favorites.push(href);
+          saveFavorites();
+          renderFavorites();
+          updateStars();
+          filterCards();
+        });
+        card.appendChild(star);
+      }
+      const active = favorites.includes(card.href);
+      star.textContent = active ? '★' : '☆';
+      star.classList.toggle('active', active);
+      star.title = active ? 'Remove from favorites' : 'Add to favorites';
+      star.setAttribute('aria-label', (active ? 'Remove ' : 'Add ') + getCardInfo(card).name + ' ' + (active ? 'from' : 'to') + ' favorites');
+    });
+  }
+  function filterCards() {
+    const term = search.value.trim().toLowerCase();
+    let visible = 0;
+    allCards.forEach(card => {
+      const match = card.textContent.toLowerCase().includes(term) || card.href.toLowerCase().includes(term);
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visible++;
+    });
+    sections.forEach(section => {
+      section.style.display = [...section.querySelectorAll('.card')].some(card => card.style.display !== 'none') ? '' : 'none';
+    });
+    document.getElementById('favoritesSection').style.display = term ? 'none' : '';
+    empty.style.display = visible ? 'none' : 'block';
+  }
+  search.addEventListener('input', filterCards);
+  renderFavorites();
+  updateStars();
+})();
+</script>
+</body>
+</html>
